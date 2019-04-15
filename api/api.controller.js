@@ -4,8 +4,10 @@ const cache = require('memory-cache');
 class Api {
 
   constructor() {
+    this.bicingApiUrl = 'https://www.bicing.barcelona/get-stations';
+
     this.cacheKey = 'stations-info';
-    this.ttl = 60 * 1000; // 60s
+    this.ttl = 600 * 1000; // 600s = 10min
   }
 
   async getSimplifiedStationList () {
@@ -29,9 +31,12 @@ class Api {
     let info = cache.get(this.cacheKey);
 
     if ( !info ) {
-      info = await fetch('http://wservice.viabicing.cat/v2/stations')
+      info = await fetch(this.bicingApiUrl)
         .then(res => res.json())
-        .catch(err => {
+        .then(data => {
+          data.updateTime = +new Date();
+          return data;
+        }).catch(err => {
           console.error(err);
           return {
             'stations': [],

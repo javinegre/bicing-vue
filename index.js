@@ -8,7 +8,7 @@ const Api = require('./api/api.controller');
 app.use(cors({
   allowedOrigins: [
     'negre.co',
-    'localhost:8080'
+    'localhost:8081'
   ]
 }));
 
