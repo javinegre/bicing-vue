@@ -13,8 +13,8 @@ const isInsideOuterArea = (coord, center) => {
 };
 
 const inInsideInnerArea = (coord, center) => {
-  const latOffset = 0.0045;
-  const lngOffset = 0.006;
+  const latOffset = 0.003;
+  const lngOffset = 0.004;
 
   return isInsideArea(coord, center, { lat: latOffset, lng: lngOffset });
 };
