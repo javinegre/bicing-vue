@@ -69,10 +69,8 @@
 <style lang="scss">
     .menu {
         position: fixed;
-        /*display: flex;*/
         bottom: 20px;
         left: 8px;
-        /*align-items: center;*/
 
         &-resources {
             position: absolute;

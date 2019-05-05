@@ -1,117 +1,39 @@
 <template>
     <div>
         <div id="map"></div>
-        <img :src="crosshairIcon" class="crosshairIcon" />
+        <md-icon class="crosshairIcon">location_searching</md-icon>
     </div>
 </template>
 
 <script>
+  import Vue from 'vue';
+
+  import { MdIcon } from 'vue-material/dist/components';
+
+  Vue.use(MdIcon);
+
   import scriptLoader from '../shared/helpers/script-loader';
 
   import mapConfig from '../shared/config/map';
   import apiKeys from '../shared/config/apis';
 
-  import crosshairIcon from '../assets/crosshair.svg';
-
-  import BbbIcon from '../assets/resource-icons/bikes-big-black.svg';
-  import BbgIcon from '../assets/resource-icons/bikes-big-gray.svg';
-  import BbvIcon from '../assets/resource-icons/bikes-big-green.svg';
-  import BboIcon from '../assets/resource-icons/bikes-big-orange.svg';
-  import BbrIcon from '../assets/resource-icons/bikes-big-red.svg';
-
-  import BsbIcon from '../assets/resource-icons/bikes-small-black.svg';
-  import BsgIcon from '../assets/resource-icons/bikes-small-gray.svg';
-  import BsvIcon from '../assets/resource-icons/bikes-small-green.svg';
-  import BsoIcon from '../assets/resource-icons/bikes-small-orange.svg';
-  import BsrIcon from '../assets/resource-icons/bikes-small-red.svg';
-
-  import SbbIcon from '../assets/resource-icons/slots-big-black.svg';
-  import SbgIcon from '../assets/resource-icons/slots-big-gray.svg';
-  import SbvIcon from '../assets/resource-icons/slots-big-green.svg';
-  import SboIcon from '../assets/resource-icons/slots-big-orange.svg';
-  import SbrIcon from '../assets/resource-icons/slots-big-red.svg';
-
-  import SsbIcon from '../assets/resource-icons/slots-small-black.svg';
-  import SsgIcon from '../assets/resource-icons/slots-small-gray.svg';
-  import SsvIcon from '../assets/resource-icons/slots-small-green.svg';
-  import SsoIcon from '../assets/resource-icons/slots-small-orange.svg';
-  import SsrIcon from '../assets/resource-icons/slots-small-red.svg';
-
-  const icons = {
-    bikes: {
-        big: {
-            black: BbbIcon,
-            gray: BbgIcon,
-            green: BbvIcon,
-            orange: BboIcon,
-            red: BbrIcon
-        },
-        small: {
-            black: BsbIcon,
-            gray: BsgIcon,
-            green: BsvIcon,
-            orange: BsoIcon,
-            red: BsrIcon
-        }
-    },
-    slots: {
-      big: {
-        black: SbbIcon,
-        gray: SbgIcon,
-        green: SbvIcon,
-        orange: SboIcon,
-        red: SbrIcon
-      },
-      small: {
-        black: SsbIcon,
-        gray: SsgIcon,
-        green: SsvIcon,
-        orange: SsoIcon,
-        red: SsrIcon
-      }
-    },
-  }
-
-  const getMarker = (activeResource, stationInfo) => {
-    let color = '';
-    const resourceNumber = stationInfo[activeResource];
-
-    if (activeResource === 'mechanical_bikes' || activeResource === 'electrical_bikes') {
-        activeResource = 'bikes';
-    }
-
-    if (stationInfo.status === 1) {
-        if (resourceNumber === 0) {
-            color = 'black';
-        }
-        else if (resourceNumber <= 2) {
-            color = 'red';
-        }
-        else if (resourceNumber <= 5) {
-          color = 'orange';
-        }
-        else {
-            color = 'green';
-        }
-    }
-    else {
-      color = 'gray';
-    }
-
-    return icons[activeResource][stationInfo._radio === 'inner' ? 'big' : 'small'][color];
-  };
+  import getMapMarker from '../shared/helpers/map-marker';
 
   const renderMarkers = (mapHandler, shownStations, activeResource, clickFn) => {
+
+    if (mapHandler === null) {
+        // Probably google maps initialization failed
+        return [];
+    }
+
     const markers = shownStations.map(it => {
       const marker = new window.google.maps.Marker({
         position: {lat: +it.latitude, lng: +it.longitude},
-        icon: getMarker(activeResource, it),
+        icon: getMapMarker(activeResource, it),
         map: mapHandler
       });
 
       marker.addListener('click', function() {
-        /* eslint-disable no-console */
-        console.log(it[activeResource]);
         clickFn(it.id);
       });
 
@@ -137,6 +59,7 @@
   export default {
     name: 'Map',
     props: [
+        'mapCenter',
         'shownStations',
         'resourceMode',
         'mechBikeFilter',
@@ -145,12 +68,15 @@
     data: function () {
         return {
             mapHandler: null,
-            markers: [],
-            crosshairIcon
+            markers: []
         }
     },
     components: {},
     watch: {
+      mapCenter: function (newVal) {
+        var center = new window.google.maps.LatLng(newVal.lat, newVal.lng);
+        window.setTimeout(() => { this.mapHandler.panTo(center) }, 300);
+      },
       mapHandler: function () {
         this.renderMarkers();
       },
@@ -228,7 +154,7 @@
   };
 </script>
 
-<style>
+<style lang="scss">
     #map {
         height: 100vh;
     }
@@ -238,5 +164,10 @@
         left: 50vw;
         top: calc(50vh - 12px);
         left: calc(50vw - 12px);
+        pointer-events: none;
+
+        &.md-icon.md-theme-default.md-icon-font {
+            color: var(--md-theme-default-accent, #ff5252);
+        }
     }
 </style>

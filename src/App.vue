@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <Map
+      v-bind:mapCenter="mapCenter"
       v-bind:shownStations="shownStations"
       v-bind:resourceMode="resourceMode"
       v-bind:mechBikeFilter="mechBikeFilter"
@@ -18,7 +19,8 @@
       v-bind:mechBikeFilter="mechBikeFilter"
       v-bind:elecBikeFilter="elecBikeFilter"
       @refresh-list="onRefreshList"
-      @resource-filter-changed="onResourceFilterChanged" />
+      @resource-filter-changed="onResourceFilterChanged"
+      @center-changed="onCenterChanged" />
     <StationInfo
       v-bind:selectedStation="selectedStation"
       v-bind:shownStations="shownStations"
@@ -33,7 +35,7 @@
   import 'vue-material/dist/vue-material.min.css';
   import 'vue-material/dist/theme/default.css';
 
-  import InfoBox from './components/InfoBox.vue';
+  import InfoBox from './components/InfoBox/InfoBox.vue';
   import Map from './components/Map.vue';
   import Menu from './components/Menu/Menu.vue';
   import StationInfo from './components/StationInfo.vue';
@@ -88,6 +90,14 @@
       },
       onSelectStation: function (stationId) {
         this.selectedStation = stationId;
+        const station = stationId && this.shownStations.find(it => it.id === stationId);
+        if (station) {
+          this.mapCenter = {
+            lat: station.latitude,
+            lng: station.longitude
+          };
+          this.filterStations();
+        }
       },
       onCenterChanged: function (mapCenter) {
         this.mapCenter = mapCenter;
