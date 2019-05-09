@@ -16,7 +16,7 @@ export default {
       "elementType": "geometry.fill",
       "stylers": [
         {
-          "color": "#e8e8e8"
+          "color": "#f4f4f4"
         }
       ]
     },
@@ -32,7 +32,7 @@ export default {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#616161"
+          "color": "#c0c0c0"
         }
       ]
     },
@@ -147,7 +147,7 @@ export default {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#757575"
+          "color": "#c0c0c0"
         }
       ]
     },
