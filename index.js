@@ -14,22 +14,22 @@ app.use(cors({
 
 app.use(express.static(__dirname + '/dist'));
 
-app.get('/api/v1.0/stations', async (req, res) => {
+app.get('/api/v1.0/station-info', async (req, res) => {
 
   const api = new Api();
-  const resData = await api.getCompleteStationList();
+  const resData = await api.getStationInfo();
 
   res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify(resData, null, 3));
+  res.send(JSON.stringify(resData, null, 0));
 });
 
-app.get('/api/v1.0/stations-simplified', async (req, res) => {
+app.get('/api/v1.0/station-status', async (req, res) => {
 
   const api = new Api();
-  const resData = await api.getSimplifiedStationList();
+  const resData = await api.getStationStatus();
 
   res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify(resData, null, 3));
+  res.send(JSON.stringify(resData, null, 0));
 });
 
 app.get('*', (req, res) => {

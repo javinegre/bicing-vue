@@ -1,53 +1,80 @@
 const fetch = require('node-fetch');
 const cache = require('memory-cache');
 
+const transformers = require('./helpers/data-transformers');
+
 class Api {
 
   constructor() {
-    this.bicingApiUrl = 'https://www.bicing.barcelona/get-stations';
+    this.bicingApiBaseUrl = 'https://api.bsmsa.eu/ext/api/bsm/gbfs/v2/en/';
 
-    this.cacheKey = 'stations-info';
-    this.ttl = 600 * 1000; // 600s = 10min
-  }
+    this.endpoints = {
+      info: 'station_information',
+      status: 'station_status'
+    };
 
-  async getSimplifiedStationList () {
-    const info = await this.getCompleteStationList();
-    const simplifiedStations = info.stations.map((station) => {
-      return {
-        id:     station.id,
-        slots:  station.slots,
-        bikes:  station.bikes,
-        status: station.status
-      };
-    });
-
-    return {
-      stations: simplifiedStations,
-      updateTime: info.updateTime
+    this.cacheConfig = {
+      info: {
+        key: 'stations-info',
+        ttl: 2 * 3600 * 1000 // 2h
+      },
+      status: {
+        key: 'stations-status',
+        ttl: 60 * 1000 // 60s
+      }
     };
   }
 
-  async getCompleteStationList () {
-    let info = cache.get(this.cacheKey);
+  async getStationInfo () {
+    let result = cache.get(this.cacheConfig.info.key);
 
-    if ( !info ) {
-      info = await fetch(this.bicingApiUrl)
+    if (!result) {
+      const info = await fetch(`${this.bicingApiBaseUrl}${this.endpoints.info}`)
         .then(res => res.json())
         .then(data => {
-          data.updateTime = +new Date();
           return data;
         }).catch(err => {
           console.error(err);
-          return {
-            'stations': [],
-            'updateTime': -1
-          };
+          return null;
         });
 
-      cache.put(this.cacheKey, info, this.ttl);
+      if (info !== null) {
+        result = {
+          last_updated: info.last_updated,
+          stations: info.data.stations.map(transformers.stationInfoTransform)
+        };
+
+        cache.put(this.cacheConfig.info.key, result, this.cacheConfig.info.ttl);
+      }
     }
 
-    return info;
+    return result;
+  }
+
+  async getStationStatus () {
+    let result = cache.get(this.cacheConfig.status.key);
+
+    if (!result) {
+      const info = await fetch(`${this.bicingApiBaseUrl}${this.endpoints.status}`)
+        .then(res => res.json())
+        .then(data => {
+          return data;
+        }).catch(err => {
+          console.error(err);
+          return null;
+        });
+
+      if (info !== null) {
+        result = {
+          last_updated: info.last_updated,
+          stations: info.data.stations.map(transformers.stationStatusTransform)
+        };
+
+        cache.put(this.cacheConfig.status.key, result, this.cacheConfig.status.ttl);
+      }
+    }
+
+    return result;
   }
 }
 
