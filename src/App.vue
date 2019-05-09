@@ -13,11 +13,15 @@
       v-bind:resourceMode="resourceMode"
       v-bind:mechBikeFilter="mechBikeFilter"
       v-bind:elecBikeFilter="elecBikeFilter"
-      v-bind:lastUpdate="lastUpdate" />
+      v-bind:lastUpdate="lastUpdate"
+      @select-station="onSelectStation" />
     <Menu
+      v-bind:mapCenter="mapCenter"
       v-bind:resourceMode="resourceMode"
       v-bind:mechBikeFilter="mechBikeFilter"
       v-bind:elecBikeFilter="elecBikeFilter"
+      v-bind:lastUpdate="lastUpdate"
+      v-bind:isLoadingData="isLoadingData"
       @refresh-list="onRefreshList"
       @resource-filter-changed="onResourceFilterChanged"
       @center-changed="onCenterChanged" />
@@ -65,7 +69,8 @@
         resourceMode: 'bikes',
         mechBikeFilter: true,
         elecBikeFilter: true,
-        lastUpdate: 0
+        lastUpdate: 0,
+        isLoadingData: false
       }
     },
     watch: {
@@ -74,12 +79,19 @@
       }
     },
     methods: {
-      refreshListInfo: function () {
-        stationService.getList().then(response => {
-          this.stationList = response.data.stations;
-          this.lastUpdate = response.data.updateTime;
+      refreshListInfo: async function () {
+        this.isLoadingData = true;
+
+        const data = await stationService.getList();
+
+        if (data !== null) {
+          this.stationList = data.stations;
+          this.lastUpdate = data.updateTime;
           this.filterStations();
-        });
+        }
+        // TODO: data problem warning
+
+        this.isLoadingData = false;
       },
       filterStations: function () {
         this.shownStations = filterStations(

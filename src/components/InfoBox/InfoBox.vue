@@ -8,7 +8,8 @@
             v-bind:shownStations="shownStations"
             v-bind:resourceMode="resourceMode"
             v-bind:mechBikeFilter="mechBikeFilter"
-            v-bind:elecBikeFilter="elecBikeFilter" />
+            v-bind:elecBikeFilter="elecBikeFilter"
+            @show-stations-info="onShowStationsInfo" />
     </section>
 </template>
 
@@ -30,7 +31,10 @@
         InfoBoxResources
     },
     methods: {
-      formatTime
+      formatTime,
+      onShowStationsInfo: function () {
+        this.$emit('select-station', -1);
+      },
     }
   }
 </script>
@@ -43,7 +47,7 @@
         font-size: 12px;
 
         &-row {
-             background-color: rgba(255,255,255,.9);
+             background-color: rgba(255,255,255,.92);
              border-radius: 4px;
              margin-bottom: 8px;
              padding: 4px 8px;

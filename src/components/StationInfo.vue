@@ -1,7 +1,8 @@
 <template>
-    <md-drawer :md-active.sync="show" @md-closed="close" class="root">
-        <div v-if="stationInfo">
+    <md-drawer :md-active.sync="show" @md-closed="close" class="root" ref="stationInfoScrollContainer">
+        <div>
             <div class="station-selected"
+                v-if="stationInfo"
                 v-bind:class="{ 'station--disabled': stationInfo.status === 0 }">
                 <h3>{{stationInfo.streetName.replace(/[0-9]*\s-\s/, '')}}</h3>
                 <div class="resource-bar--selected">
@@ -94,15 +95,19 @@
     watch: {
       selectedStation: function () {
         this.stationInfo = this.shownStations.find(it => it.id === this.selectedStation) || null;
-        this.show = this.stationInfo !== null;
+        this.show = this.selectedStation !== null;
       }
     },
     methods: {
+        scrollToTop: function () {
+          this.$refs.stationInfoScrollContainer.$el.scrollTop = 0;
+        },
         close: function () {
             this.$emit('select-station', null);
         },
         selectStation: function (id) {
           this.$emit('select-station', id);
+          this.scrollToTop();
         },
         sortByDistance: (a, b) => a._distance - b._distance,
         filterInner: st => it => it.id !== st && it._radio === 'inner',

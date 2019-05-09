@@ -6,7 +6,7 @@
             <md-icon>directions_bike</md-icon>
         </div>
         <span class="divider"></span>
-        <md-button class="md-icon-button"
+        <md-button class="md-icon-button menu-resources-bikeType menu-resources-bikeType-mech"
             v-bind:class="{
                 'menu-resources-bikeType--active': mechBikeVal,
                 'menu-resources-bikeType--disabled': resourceMode === 'slots'
@@ -18,7 +18,7 @@
                 <span v-else><md-icon>close</md-icon></span>
             </span>
         </md-button>
-        <md-button class="md-icon-button menu-resources-bikeType-elec"
+        <md-button class="md-icon-button menu-resources-bikeType menu-resources-bikeType-elec"
             v-bind:class="{
                 'menu-resources-bikeType--active': elecBikeVal,
                 'menu-resources-bikeType--disabled': resourceMode === 'slots'
@@ -62,20 +62,14 @@
           ? ['mechBikeFilter', 'mechBikeVal', 'elecBikeVal']
           : ['elecBikeFilter', 'elecBikeVal', 'mechBikeVal'];
 
-        let emit = false;
-
         this[valueProp] = !this[valueProp];
 
         if ( !this[valueProp] && !this[oppositeProp] ) {
-          emit = true;
           this[oppositeProp] = true;
         }
 
         return function () {
           this.$emit('resource-filter-changed', {type: filterType, value: this[valueProp]});
-          if (emit) {
-            this.$emit('resource-filter-changed', {type: filterType, value: this[valueProp]});
-          }
         }
       }
     },
@@ -97,35 +91,39 @@
     .menu-resources {
         position: absolute;
         top: 14px;
-        left: 72px;
+        right: 78px;
         display: flex;
         height: 44px;
         padding: 8px 4px 8px 10px;
         align-items: center;
         border-radius: 22px;
-        background-color: rgba(255,255,255,.8);
+        background-color: rgba(255,255,255,.92);
         box-shadow: 0px 2px 4px 1px rgba(0,0,0,.2);
 
         &-bikeType {
              margin-right: 8px;
              transition: opacity 200ms ease;
 
+            .menu-resources-filter-icon {
+                opacity: .33;
+            }
+
             &--disabled {
                  opacity: 0.2;
+                 pointer-events: none;
              }
 
             &:last-child {
                  margin-right: 0;
              }
 
-            /*&--active .menu-resources-filter-state {*/
             &--active {
                 .md-icon.md-theme-default.md-icon-font {
                     color: var(--md-theme-default-primary);
                 }
 
                 .menu-resources-filter-icon {
-                    filter: saturate(0.4);
+                    opacity: 1;
                 }
             }
         }
@@ -158,10 +156,6 @@
                 height: 14px;
                 font-size: 14px!important;
             }
-
-            /*.md-icon.md-theme-default.md-icon-font {*/
-                /*color: #a0a0a0;*/
-            /*}*/
         }
     }
 

@@ -1,5 +1,19 @@
 <template>
-    <div class="infoBox-availability">
+    <div class="infoBox-availability"
+        @click="showStationsInfo">
+
+        <div class="infoBox-availability-col infoBox-availability-col--info"
+             v-bind:class="{ 'col-highlight': resourceMode === 'slots' }">
+            <div>
+                <md-icon>local_parking</md-icon>
+            </div>
+            <div>
+                {{ getResources('inner')[3] }}
+            </div>
+        </div>
+
+        <div class="infoBox-availability-col infoBox-availability-col--divider"></div>
+
         <div class="infoBox-availability-col infoBox-availability-col--info"
              v-bind:class="{ 'col-highlight': resourceMode === 'bikes' && mechBikeFilter && elecBikeFilter }">
             <div>
@@ -39,16 +53,6 @@
             <div>)</div>
             <div>)</div>
         </div>
-        <div class="infoBox-availability-col infoBox-availability-col--divider"></div>
-        <div class="infoBox-availability-col infoBox-availability-col--info"
-             v-bind:class="{ 'col-highlight': resourceMode === 'slots' }">
-            <div>
-                <md-icon>local_parking</md-icon>
-            </div>
-            <div>
-                {{ getResources('inner')[3] }}
-            </div>
-        </div>
     </div>
 </template>
 
@@ -81,6 +85,9 @@
 
         return resSum;
       },
+      showStationsInfo: function () {
+        this.$emit('show-stations-info');
+      }
     }
   }
 </script>
