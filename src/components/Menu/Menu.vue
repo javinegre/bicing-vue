@@ -23,6 +23,7 @@
 
 <script>
   import Vue from 'vue';
+  import { mapState } from 'vuex';
 
   import { MdButton, MdIcon, MdProgress } from 'vue-material/dist/components';
 
@@ -50,13 +51,11 @@
       'mapCenter',
       'resourceMode',
       'mechBikeFilter',
-      'elecBikeFilter',
-      'lastUpdate',
-      'isLoadingData'
+      'elecBikeFilter'
     ],
     methods: {
         refresh () {
-            this.$emit('refresh-list');
+            this.$store.dispatch('stations/getAllStations');
         },
         calculateRefreshButtonSaturation () {
           const now = +new Date();
@@ -75,6 +74,10 @@
         this.calculateRefreshButtonSaturation();
       }
     },
+    computed: mapState({
+      lastUpdate: state => state.stations.lastUpdate,
+      isLoadingData: state => state.loading.app
+    }),
     created() {
         this.refreshButtonStyleIntervalId = window.setInterval(
             this.calculateRefreshButtonSaturation.bind(this),

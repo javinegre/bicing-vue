@@ -14,6 +14,8 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
+
   import InfoBoxResources from './InfoBoxResources.vue';
 
   import formatTime from '../../shared/helpers/format-time';
@@ -24,8 +26,7 @@
       'shownStations',
       'resourceMode',
       'mechBikeFilter',
-      'elecBikeFilter',
-      'lastUpdate'
+      'elecBikeFilter'
     ],
     components: {
         InfoBoxResources
@@ -34,8 +35,11 @@
       formatTime,
       onShowStationsInfo: function () {
         this.$emit('select-station', -1);
-      },
-    }
+      }
+    },
+    computed: mapState({
+      lastUpdate: state => state.stations.lastUpdate
+    })
   }
 </script>
 
