@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const StationService = () => {
-  // const server = 'https://negre.co/';
-  const server = 'http://localhost:8080/';
+  const server = 'https://negre.co/';
+  // const server = 'http://localhost:8080/'; // TODO: use config
   const apiUri = 'bicing/api/v1.0/';
 
   const getEndpointUrl = (endpoint) => `${server}${apiUri}${endpoint}`;
