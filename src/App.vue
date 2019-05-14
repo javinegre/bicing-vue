@@ -32,6 +32,7 @@
       v-bind:mechBikeFilter="mechBikeFilter"
       v-bind:elecBikeFilter="elecBikeFilter"
       @select-station="onSelectStation" />
+    <AppInfoMenu />
   </div>
 </template>
 
@@ -39,6 +40,7 @@
   import 'vue-material/dist/vue-material.min.css';
   import 'vue-material/dist/theme/default.css';
 
+  import AppInfoMenu from './components/AppInfoMenu/AppInfoMenu.vue';
   import InfoBox from './components/InfoBox/InfoBox.vue';
   import Map from './components/Map.vue';
   import Menu from './components/Menu/Menu.vue';
@@ -55,6 +57,7 @@
   export default {
     name: 'app',
     components: {
+      AppInfoMenu,
       InfoBox,
       Map,
       Menu,
