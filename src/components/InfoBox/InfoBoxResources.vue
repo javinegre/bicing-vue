@@ -58,6 +58,7 @@
 
 <script>
   import Vue from 'vue';
+  import { mapState } from 'vuex';
 
   import { MdIcon } from 'vue-material/dist/components';
 
@@ -66,10 +67,7 @@
   export default {
     name: 'InfoBoxResources',
     props: [
-      'shownStations',
-      'resourceMode',
-      'mechBikeFilter',
-      'elecBikeFilter'
+      'shownStations'
     ],
     methods: {
       getResources: function (radio) {
@@ -86,9 +84,14 @@
         return resSum;
       },
       showStationsInfo: function () {
-        this.$emit('show-stations-info');
+        this.$store.dispatch('stations/selectStation', -1);
       }
-    }
+    },
+    computed: mapState({
+      resourceMode: state => state.filters.resourceMode,
+      mechBikeFilter: state => state.filters.mechBikeFilter,
+      elecBikeFilter: state => state.filters.elecBikeFilter
+    })
   }
 </script>
 

@@ -8,25 +8,25 @@
         <span class="divider"></span>
         <md-button class="md-icon-button menu-resources-bikeType menu-resources-bikeType-mech"
             v-bind:class="{
-                'menu-resources-bikeType--active': mechBikeVal,
-                'menu-resources-bikeType--disabled': resourceMode === 'slots'
+                'menu-resources-bikeType--active': mechBikeFilter,
+                'menu-resources-bikeType--disabled': !resourceVal
             }"
             @click="switchFilter('mech')">
             <md-icon class="menu-resources-filter-icon">settings</md-icon>
             <span class="menu-resources-filter-state">
-                <span v-if="mechBikeVal"><md-icon>check</md-icon></span>
+                <span v-if="mechBikeFilter"><md-icon>check</md-icon></span>
                 <span v-else><md-icon>close</md-icon></span>
             </span>
         </md-button>
         <md-button class="md-icon-button menu-resources-bikeType menu-resources-bikeType-elec"
             v-bind:class="{
-                'menu-resources-bikeType--active': elecBikeVal,
-                'menu-resources-bikeType--disabled': resourceMode === 'slots'
+                'menu-resources-bikeType--active': elecBikeFilter,
+                'menu-resources-bikeType--disabled': !resourceVal
             }"
             @click="switchFilter('elec')">
             <md-icon class="menu-resources-filter-icon">power</md-icon>
             <span class="menu-resources-filter-state">
-                <span v-if="elecBikeVal"><md-icon>check</md-icon></span>
+                <span v-if="elecBikeFilter"><md-icon>check</md-icon></span>
                 <span v-else><md-icon>close</md-icon></span>
             </span>
         </md-button>
@@ -35,6 +35,7 @@
 
 <script>
   import Vue from 'vue';
+  import { mapState } from 'vuex';
 
   import { MdButton, MdIcon, MdSwitch } from 'vue-material/dist/components';
 
@@ -44,46 +45,36 @@
 
   export default {
     name: 'MenuResources',
-    props: [
-      'resourceMode',
-      'mechBikeFilter',
-      'elecBikeFilter'
-    ],
+    props: [],
     data: function () {
       return {
-        resourceVal: true,
-        mechBikeVal: true,
-        elecBikeVal: true
+        resourceVal: true
       };
     },
     methods: {
       switchFilter (type) {
-        const [filterType, valueProp, oppositeProp] = type === 'mech'
-          ? ['mechBikeFilter', 'mechBikeVal', 'elecBikeVal']
-          : ['elecBikeFilter', 'elecBikeVal', 'mechBikeVal'];
+        const [changedValue, oppositeValue] = type === 'mech'
+            ? ['mechBikeFilter', 'elecBikeFilter']
+            : ['elecBikeFilter', 'mechBikeFilter'];
 
-        this[valueProp] = !this[valueProp];
-
-        if ( !this[valueProp] && !this[oppositeProp] ) {
-          this[oppositeProp] = true;
+        const newFilterValues = {
+            [changedValue]: !this[changedValue],
+            [oppositeValue]: true
         }
 
-        return function () {
-          this.$emit('resource-filter-changed', {type: filterType, value: this[valueProp]});
-        }
+        this.$store.dispatch('filters/changeBikeType', newFilterValues);
       }
     },
     watch: {
       resourceVal: function (newVal) {
-        this.$emit('resource-filter-changed', {type: 'resourceMode', value: newVal});
+        this.$store.dispatch('filters/changeResourceMode', newVal ? 'bikes' : 'slots');
       },
-      mechBikeVal: function (newVal) {
-        this.$emit('resource-filter-changed', {type: 'mechBikeFilter', value: newVal});
-      },
-      elecBikeVal: function (newVal) {
-        this.$emit('resource-filter-changed', {type: 'elecBikeFilter', value: newVal});
-      }
-    }
+    },
+    computed: mapState({
+      resourceMode: state => state.filters.resourceMode,
+      mechBikeFilter: state => state.filters.mechBikeFilter,
+      elecBikeFilter: state => state.filters.elecBikeFilter
+    })
   }
 </script>
 

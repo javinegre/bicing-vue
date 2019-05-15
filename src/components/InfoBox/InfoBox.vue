@@ -5,11 +5,7 @@
             <span class="infoBox-updateTime-label">last updated</span>
         </div>
         <InfoBoxResources class="infoBox-row"
-            v-bind:shownStations="shownStations"
-            v-bind:resourceMode="resourceMode"
-            v-bind:mechBikeFilter="mechBikeFilter"
-            v-bind:elecBikeFilter="elecBikeFilter"
-            @show-stations-info="onShowStationsInfo" />
+            v-bind:shownStations="shownStations" />
     </section>
 </template>
 
@@ -23,19 +19,13 @@
   export default {
     name: 'InfoBox',
     props: [
-      'shownStations',
-      'resourceMode',
-      'mechBikeFilter',
-      'elecBikeFilter'
+      'shownStations'
     ],
     components: {
         InfoBoxResources
     },
     methods: {
-      formatTime,
-      onShowStationsInfo: function () {
-        this.$emit('select-station', -1);
-      }
+      formatTime
     },
     computed: mapState({
       lastUpdate: state => state.stations.lastUpdate

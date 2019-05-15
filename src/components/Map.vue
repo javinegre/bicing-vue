@@ -7,6 +7,7 @@
 
 <script>
   import Vue from 'vue';
+  import { mapState } from 'vuex';
 
   import { MdIcon } from 'vue-material/dist/components';
 
@@ -48,6 +49,7 @@
 
     mapHandler.addListener('dragstart', fns.onDragstart);
     mapHandler.addListener('dragend', fns.onDragend);
+    mapHandler.addListener('zoom_changed', fns.onZoomChanged);
 
     return mapHandler;
   };
@@ -59,11 +61,7 @@
   export default {
     name: 'Map',
     props: [
-        'mapCenter',
-        'shownStations',
-        'resourceMode',
-        'mechBikeFilter',
-        'elecBikeFilter'
+        'shownStations'
     ],
     data: function () {
         return {
@@ -104,14 +102,14 @@
         const vm = this;
         this.removeMarkers();
         this.markers = renderMarkers(this.mapHandler, this.shownStations, this.getActiveResource(), function (id) {
-            vm.$emit('select-station', id);
+            vm.$store.dispatch('stations/selectStation', id);
         });
       },
       removeMarkers() {
         this.markers.map(it => { it.setMap(null) })
       },
       centerChanged (newCenter) {
-        this.$emit('center-changed', newCenter);
+        this.$store.dispatch('map/changeMapCenter', newCenter);
       },
       getActiveResource() {
         let activeResource = '';
@@ -133,6 +131,12 @@
         return activeResource;
       }
     },
+    computed: mapState({
+      mapCenter: state => state.map.center,
+      resourceMode: state => state.filters.resourceMode,
+      mechBikeFilter: state => state.filters.mechBikeFilter,
+      elecBikeFilter: state => state.filters.elecBikeFilter
+    }),
     mounted () {
       loadMap();
 
@@ -143,6 +147,12 @@
             vm.removeMarkers();
           },
           onDragend: function () {
+            vm.centerChanged({
+              lat: this.center.lat(),
+              lng: this.center.lng()
+            });
+          },
+          onZoomChanged: function () {
             vm.centerChanged({
               lat: this.center.lat(),
               lng: this.center.lng()

@@ -1,33 +1,12 @@
 <template>
   <div id="app">
     <Map
-      v-bind:mapCenter="mapCenter"
-      v-bind:shownStations="shownStations"
-      v-bind:resourceMode="resourceMode"
-      v-bind:mechBikeFilter="mechBikeFilter"
-      v-bind:elecBikeFilter="elecBikeFilter"
-      @select-station="onSelectStation"
-      @center-changed="onCenterChanged" />
+      v-bind:shownStations="shownStations" />
     <InfoBox
-      v-bind:shownStations="shownStations"
-      v-bind:resourceMode="resourceMode"
-      v-bind:mechBikeFilter="mechBikeFilter"
-      v-bind:elecBikeFilter="elecBikeFilter"
-      @select-station="onSelectStation" />
-    <Menu
-      v-bind:mapCenter="mapCenter"
-      v-bind:resourceMode="resourceMode"
-      v-bind:mechBikeFilter="mechBikeFilter"
-      v-bind:elecBikeFilter="elecBikeFilter"
-      @resource-filter-changed="onResourceFilterChanged"
-      @center-changed="onCenterChanged" />
+      v-bind:shownStations="shownStations" />
+    <Menu />
     <StationInfo
-      v-bind:selectedStation="selectedStation"
-      v-bind:shownStations="shownStations"
-      v-bind:resourceMode="resourceMode"
-      v-bind:mechBikeFilter="mechBikeFilter"
-      v-bind:elecBikeFilter="elecBikeFilter"
-      @select-station="onSelectStation" />
+      v-bind:shownStations="shownStations" />
     <AppInfoMenu />
   </div>
 </template>
@@ -44,13 +23,7 @@
   import Menu from './components/Menu/Menu.vue';
   import StationInfo from './components/StationInfo.vue';
 
-  import StationService from './services/stations';
-
   import filterStations from './shared/helpers/filter-stations';
-
-  import mapConfig from './shared/config/map';
-
-  const stationService = StationService();
 
   export default {
     name: 'app',
@@ -63,17 +36,26 @@
     },
     data: function () {
       return {
-        mapCenter: mapConfig.center,
-        shownStations: [],
-        selectedStation: null,
-        resourceMode: 'bikes',
-        mechBikeFilter: true,
-        elecBikeFilter: true
+        shownStations: []
       }
     },
     watch: {
       mapCenter: function () {
         this.filterStations();
+      },
+      selectedStation: function (newStationId, oldStationId) {
+        const station = newStationId && this.shownStations.find(it => it.id === newStationId);
+        if (station) {
+          // If oldStation is null menu will slide from the left, map will pan afterwards.
+          const transitionDuration = oldStationId === null ? 450 : 10;
+
+          window.setTimeout(() => {
+            this.$store.dispatch('map/changeMapCenter', {
+              lat: station.latitude,
+              lng: station.longitude
+            });
+          }, transitionDuration)
+        }
       }
     },
     methods: {
@@ -84,40 +66,19 @@
           this.resourceMode
         );
       },
-      onSelectStation: function (stationId) {
-        this.selectedStation = stationId;
-        const station = stationId && this.shownStations.find(it => it.id === stationId);
-        if (station) {
-          this.mapCenter = {
-            lat: station.latitude,
-            lng: station.longitude
-          };
-          this.filterStations();
-        }
-      },
-      onCenterChanged: function (mapCenter) {
-        this.mapCenter = mapCenter;
-      },
-      onResourceFilterChanged: function (data) {
-        if (data.type === 'resourceMode') {
-          this.resourceMode = data.value ? 'bikes' : 'slots';
-        }
-        else if (data.type === 'mechBikeFilter' || data.type === 'elecBikeFilter') {
-          this[data.type] = data.value;
-        }
-
-        this.filterStations();
-      }
     },
     computed: mapState({
+      mapCenter: state => state.map.center,
       stationList: state => state.stations.list,
-      lastUpdate: state => state.stations.lastUpdate
+      selectedStation: state => state.stations.selected,
+      lastUpdate: state => state.stations.lastUpdate,
+      resourceMode: state => state.filters.resourceMode
     }),
     created () {
       this.$store.dispatch('stations/getAllStations');
     },
     mounted () {
-      this.$store.subscribe((mutation, state) => {
+      this.$store.subscribe((mutation) => {
         switch(mutation.type) {
           case 'stations/setList':
             this.filterStations();

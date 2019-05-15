@@ -10,14 +10,8 @@
                 </span>
             </md-button>
         </div>
-        <MenuResources
-            v-bind:resourceMode="resourceMode"
-             v-bind:mechBikeFilter="mechBikeFilter"
-             v-bind:elecBikeFilter="elecBikeFilter"
-             @resource-filter-changed="onResourceFilterChanged" />
-        <MenuLocations
-            v-bind:mapCenter="mapCenter"
-            @center-changed="onCenterChanged" />
+        <MenuResources />
+        <MenuLocations />
     </section>
 </template>
 
@@ -48,7 +42,6 @@
         }
     },
     props: [
-      'mapCenter',
       'resourceMode',
       'mechBikeFilter',
       'elecBikeFilter'
@@ -61,12 +54,6 @@
           const now = +new Date();
           const timespan = this.refreshButtonStyleTimespan * 60 * 1000;
           this.refreshButtonSaturation = Math.min((now - this.lastUpdate) / timespan, 1);
-        },
-        onCenterChanged (coords) {
-          this.$emit('center-changed', coords);
-        },
-        onResourceFilterChanged (data) {
-          this.$emit('resource-filter-changed', data);
         }
     },
     watch: {

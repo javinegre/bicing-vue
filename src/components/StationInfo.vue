@@ -71,6 +71,7 @@
 
 <script>
   import Vue from 'vue';
+  import { mapState } from 'vuex';
 
   import { MdDrawer, MdIcon } from 'vue-material/dist/components';
 
@@ -80,11 +81,7 @@
   export default {
     name: 'StationInfo',
     props: [
-        'selectedStation',
-        'shownStations',
-        'resourceMode',
-        'mechBikeFilter',
-        'elecBikeFilter'
+        'shownStations'
     ],
     data: function () {
         return {
@@ -103,10 +100,10 @@
           this.$refs.stationInfoScrollContainer.$el.scrollTop = 0;
         },
         close: function () {
-            this.$emit('select-station', null);
+            this.$store.dispatch('stations/selectStation', null);
         },
         selectStation: function (id) {
-          this.$emit('select-station', id);
+          this.$store.dispatch('stations/selectStation', id);
           this.scrollToTop();
         },
         sortByDistance: (a, b) => a._distance - b._distance,
@@ -126,7 +123,10 @@
           const perc = resourceNumber / (total || 1) * 100;
           return `${perc}%`;
         }
-    }
+    },
+    computed: mapState({
+      selectedStation: state => state.stations.selected
+    })
   }
 </script>
 

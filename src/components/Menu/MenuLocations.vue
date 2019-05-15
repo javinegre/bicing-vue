@@ -75,7 +75,7 @@
     },
     methods: {
       changeCenter (coords) {
-        this.$emit('center-changed', coords);
+        this.$store.dispatch('map/changeMapCenter', coords);
       },
       geoLocate () {
         if ( 'geolocation' in navigator ) {

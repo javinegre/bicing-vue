@@ -5,6 +5,7 @@ const stationService = StationService();
 // Initial State
 const state = {
   list: [],
+  selected: null,
   lastUpdate: -Infinity
 }
 
@@ -22,6 +23,10 @@ const actions = {
     // TODO: 'else', general error
 
     dispatch('loading/appLoading', false, {root:true});
+  },
+
+  selectStation ({ commit }, stationId) {
+    commit('setSelectedStation', stationId);
   }
 };
 
@@ -30,6 +35,10 @@ const mutations = {
   setList (state, data) {
     state.list = data.stations;
     state.lastUpdate = data.updateTime;
+  },
+
+  setSelectedStation (state, stationId) {
+    state.selected = stationId;
   }
 }
 
