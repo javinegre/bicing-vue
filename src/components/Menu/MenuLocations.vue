@@ -64,9 +64,7 @@
 
   export default {
     name: 'MenuLocations',
-    props: [
-      'mapCenter',
-    ],
+    props: [],
     data: function () {
       return {
         showSnackbar: false,
@@ -97,6 +95,7 @@
       longpress
     },
     computed: mapState({
+      mapCenter: state => state.map.center,
       isGeoLocationLoading: state => state.loading.geoLocation
     })
   }
