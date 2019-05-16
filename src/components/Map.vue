@@ -19,6 +19,7 @@
   import apiKeys from '../shared/config/apis';
 
   import getMapMarker from '../shared/helpers/map-marker';
+  import myLocationIcon from '../assets/resource-icons/my-location.svg';
 
   const renderMarkers = (mapHandler, shownStations, activeResource, clickFn) => {
 
@@ -66,7 +67,8 @@
     data: function () {
         return {
             mapHandler: null,
-            markers: []
+            markers: [],
+            myLocationMarker: null
         }
     },
     components: {},
@@ -77,6 +79,24 @@
       },
       mapHandler: function () {
         this.renderMarkers();
+      },
+      myLocation: function (newLocationVal) {
+        if ( newLocationVal !== null ) {
+            if ( this.myLocationMarker === null ) {
+              this.myLocationMarker = new window.google.maps.Marker({
+                position: newLocationVal,
+                icon: {
+                    url: myLocationIcon,
+                    anchor: new window.google.maps.Point(10,10),
+                    scaledSize: new window.google.maps.Size(20, 20)
+                },
+                map: this.mapHandler
+              })
+            }
+            else {
+              this.myLocationMarker.setPosition(newLocationVal);
+            }
+        }
       },
       shownStations: function () {
         if (this.mapHandler !== null) {
@@ -133,6 +153,7 @@
     },
     computed: mapState({
       mapCenter: state => state.map.center,
+      myLocation: state => state.map.myLocation,
       resourceMode: state => state.filters.resourceMode,
       mechBikeFilter: state => state.filters.mechBikeFilter,
       elecBikeFilter: state => state.filters.elecBikeFilter
@@ -159,6 +180,8 @@
             });
           }
         });
+
+        vm.$emit('geo-locate');
       };
     }
   };

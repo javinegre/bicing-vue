@@ -2,7 +2,8 @@ import mapConfig from '../../shared/config/map';
 
 // Initial State
 const state = {
-  center: mapConfig.center
+  center: mapConfig.center,
+  myLocation: null
 }
 
 // Getters
@@ -12,6 +13,9 @@ const getters = {};
 const actions = {
   changeMapCenter ({ commit }, center) {
     commit('setMapCenter', center);
+  },
+  changeMyLocation ({ commit }, coords) {
+    commit('setMyLocation', coords);
   }
 };
 
@@ -19,6 +23,9 @@ const actions = {
 const mutations = {
   setMapCenter (state, center) {
     state.center = center;
+  },
+  setMyLocation (state, coords) {
+    state.myLocation = coords;
   }
 }
 

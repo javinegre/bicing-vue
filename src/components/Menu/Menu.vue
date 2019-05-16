@@ -11,7 +11,8 @@
             </md-button>
         </div>
         <MenuResources />
-        <MenuLocations />
+        <MenuLocations
+            @geo-locate="geoLocate" />
     </section>
 </template>
 
@@ -54,6 +55,9 @@
           const now = +new Date();
           const timespan = this.refreshButtonStyleTimespan * 60 * 1000;
           this.refreshButtonSaturation = Math.min((now - this.lastUpdate) / timespan, 1);
+        },
+        geoLocate () {
+            this.$emit('geo-locate');
         }
     },
     watch: {

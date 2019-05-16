@@ -1,10 +1,12 @@
 <template>
   <div id="app">
     <Map
-      v-bind:shownStations="shownStations" />
+      v-bind:shownStations="shownStations"
+      @geo-locate="geoLocate" />
     <InfoBox
       v-bind:shownStations="shownStations" />
-    <Menu />
+    <Menu
+      @geo-locate="geoLocate" />
     <StationInfo
       v-bind:shownStations="shownStations" />
     <AppInfoMenu />
@@ -66,6 +68,29 @@
           this.resourceMode
         );
       },
+      geoLocate: function () {
+        if ( 'geolocation' in navigator ) {
+          this.$store.dispatch('loading/geoLocationLoading', true);
+          navigator.geolocation.getCurrentPosition((pos) => {
+            const newPos = {
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude
+            };
+
+            this.$store.dispatch('map/changeMapCenter', newPos);
+            this.$store.dispatch('map/changeMyLocation', newPos);
+
+            this.$store.dispatch('loading/geoLocationLoading', false);
+          },(error) => {
+            /* eslint-disable no-console */
+            console.log(error);
+            this.$store.dispatch('loading/geoLocationLoading', false);
+          }, {
+            timeout : 10000,
+              maximumAge: 60000
+          });
+        }
+      }
     },
     computed: mapState({
       mapCenter: state => state.map.center,

@@ -1,6 +1,7 @@
 // Initial State
 const state = {
-  app: false
+  app: false,
+  geoLocation: false
 }
 
 // Getters
@@ -10,6 +11,9 @@ const getters = {};
 const actions = {
   appLoading ({ commit }, status) {
     commit('setAppLoading', status);
+  },
+  geoLocationLoading ({ commit }, status) {
+    commit('setGeoLocationLoading', status);
   }
 };
 
@@ -17,6 +21,9 @@ const actions = {
 const mutations = {
   setAppLoading (state, data) {
     state.app = data;
+  },
+  setGeoLocationLoading (state, data) {
+    state.geoLocation = data;
   }
 }
 

@@ -33,6 +33,7 @@
 
 <script>
   import Vue from 'vue';
+  import { mapState } from 'vuex';
 
   import { MdProgress, MdSnackbar } from 'vue-material/dist/components';
 
@@ -69,33 +70,10 @@
     data: function () {
       return {
         showSnackbar: false,
-        snackbarMessage: '',
-        isGeoLocationLoading: false
+        snackbarMessage: ''
       }
     },
     methods: {
-      changeCenter (coords) {
-        this.$store.dispatch('map/changeMapCenter', coords);
-      },
-      geoLocate () {
-        if ( 'geolocation' in navigator ) {
-          this.isGeoLocationLoading = true;
-          navigator.geolocation.getCurrentPosition((pos) => {
-            this.changeCenter({
-              lat: pos.coords.latitude,
-              lng: pos.coords.longitude
-            });
-            this.isGeoLocationLoading = false;
-          },(error) => {
-              /* eslint-disable no-console */
-            console.log(error);
-            this.isGeoLocationLoading = false;
-          }, {
-            timeout : 10000,
-            maximumAge: 60000
-          });
-        }
-      },
       setCurrentCenter: function (type) {
         return function () {
           localStorage[type] = JSON.stringify(this.mapCenter);
@@ -105,16 +83,22 @@
       },
       gotoCoords (type) {
         if (localStorage[type]) {
-          this.changeCenter(JSON.parse(localStorage[type]));
+          this.$store.dispatch('map/changeMapCenter', JSON.parse(localStorage[type]));
         }
         else {
           this.setCurrentCenter(type)();
         }
+      },
+      geoLocate () {
+        this.$emit('geo-locate');
       }
     },
     directives: {
       longpress
-    }
+    },
+    computed: mapState({
+      isGeoLocationLoading: state => state.loading.geoLocation
+    })
   }
 </script>
 

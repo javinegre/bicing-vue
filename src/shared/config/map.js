@@ -1,5 +1,5 @@
 export default {
-  center: {lat: 41.398269, lng: 2.150632},
+  center: {lat: 41.38694482, lng: 2.17017464},
   zoom: 15,
   gestureHandling: 'greedy',
   disableDefaultUI: true,
