@@ -3,7 +3,7 @@
         @click="showStationsInfo">
 
         <div class="infoBox-availability-col infoBox-availability-col--info"
-             v-bind:class="{ 'col-highlight': resourceMode === 'slots' }">
+             v-bind:class="{ 'col-highlight': resourceMode === ResourceTypesEnum.docks }">
             <div>
                 <md-icon>local_parking</md-icon>
             </div>
@@ -15,7 +15,7 @@
         <div class="infoBox-availability-col infoBox-availability-col--divider"></div>
 
         <div class="infoBox-availability-col infoBox-availability-col--info"
-             v-bind:class="{ 'col-highlight': resourceMode === 'bikes' && mechBikeFilter && elecBikeFilter }">
+             v-bind:class="{ 'col-highlight': resourceMode === ResourceTypesEnum.bikes && mechBikeFilter && elecBikeFilter }">
             <div>
                 <md-icon>directions_bike</md-icon>
             </div>
@@ -28,7 +28,7 @@
             <div>(</div>
         </div>
         <div class="infoBox-availability-col infoBox-availability-col--info"
-             v-bind:class="{ 'col-highlight': resourceMode === 'bikes' && mechBikeFilter }">
+             v-bind:class="{ 'col-highlight': resourceMode === ResourceTypesEnum.bikes && mechBikeFilter }">
             <div>
                 <md-icon>settings</md-icon>
             </div>
@@ -41,7 +41,7 @@
             <div>+</div>
         </div>
         <div class="infoBox-availability-col infoBox-availability-col--info"
-             v-bind:class="{ 'col-highlight': resourceMode === 'bikes' && elecBikeFilter }">
+             v-bind:class="{ 'col-highlight': resourceMode === ResourceTypesEnum.bikes && elecBikeFilter }">
             <div>
                 <md-icon>power</md-icon>
             </div>
@@ -62,6 +62,8 @@
 
   import { MdIcon } from 'vue-material/dist/components';
 
+  import { ResourceTypesEnum, BikeTypesEnum } from '../../shared/enums';
+
   Vue.use(MdIcon);
 
   export default {
@@ -69,14 +71,19 @@
     props: [
       'shownStations'
     ],
+    data: function () {
+        return {
+            ResourceTypesEnum
+        };
+    },
     methods: {
       getResources: function (radio) {
         const resSum = this.shownStations.filter(it => it._radio === radio && it.status === 1).reduce((sum, it) => {
           const result = [
-            sum[0] + +it.bikes,
-            sum[1] + +it.mechanical_bikes,
-            sum[2] + +it.electrical_bikes,
-            sum[3] + +it.slots
+            sum[0] + it[ResourceTypesEnum.bikes],
+            sum[1] + it[BikeTypesEnum.mech],
+            sum[2] + it[BikeTypesEnum.elec],
+            sum[3] + it[ResourceTypesEnum.docks]
           ];
           return result;
         },[0,0,0,0]);

@@ -13,6 +13,8 @@
 
   Vue.use(MdIcon);
 
+  import { ResourceTypesEnum, BikeTypesEnum } from '../shared/enums';
+
   import scriptLoader from '../shared/helpers/script-loader';
 
   import mapConfig from '../shared/config/map';
@@ -30,7 +32,7 @@
 
     const markers = shownStations.map(it => {
       const marker = new window.google.maps.Marker({
-        position: {lat: +it.latitude, lng: +it.longitude},
+        position: {lat: it.lat, lng: it.lng},
         icon: getMapMarker(activeResource, it),
         map: mapHandler
       });
@@ -133,19 +135,19 @@
       },
       getActiveResource() {
         let activeResource = '';
-        if (this.resourceMode === 'bikes') {
+        if (this.resourceMode === ResourceTypesEnum.bikes) {
             if (this.mechBikeFilter && !this.elecBikeFilter) {
-              activeResource = 'mechanical_bikes';
+              activeResource = BikeTypesEnum.mech;
             }
             else if (!this.mechBikeFilter && this.elecBikeFilter) {
-              activeResource = 'electrical_bikes';
+              activeResource = BikeTypesEnum.elec;
             }
             else {
-              activeResource = 'bikes';
+              activeResource = ResourceTypesEnum.bikes;
             }
         }
         else {
-            activeResource = 'slots';
+            activeResource = ResourceTypesEnum.docks;
         }
 
         return activeResource;

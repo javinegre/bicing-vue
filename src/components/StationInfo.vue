@@ -4,29 +4,29 @@
             <div class="station-selected"
                 v-if="stationInfo"
                 v-bind:class="{ 'station--disabled': stationInfo.status === 0 }">
-                <h3>{{stationInfo.streetName.replace(/[0-9]*\s-\s/, '')}}</h3>
+                <h3>{{stationInfo.name.replace(/[0-9]*\s-\s/, '')}}</h3>
                 <div class="resource-bar--selected">
-                    <div class="mech-bar" v-bind:style="{ width: getBarWidth(stationInfo, 'mechanical_bikes') }"></div>
-                    <div class="elec-bar" v-bind:style="{ width: getBarWidth(stationInfo, 'electrical_bikes') }"></div>
-                    <div class="slots-bar" v-bind:style="{ width: getBarWidth(stationInfo, 'slots') }"></div>
+                    <div class="mech-bar" v-bind:style="{ width: getBarWidth(stationInfo, BikeTypesEnum.mech) }"></div>
+                    <div class="elec-bar" v-bind:style="{ width: getBarWidth(stationInfo, BikeTypesEnum.elec) }"></div>
+                    <div class="docks-bar" v-bind:style="{ width: getBarWidth(stationInfo, ResourceTypesEnum.docks) }"></div>
                 </div>
                 <div class="resource-numbers">
                     <div class="resource-numbers-bikes">
                         <div class="resource-numbers-bikes-total">
                             <md-icon>directions_bike</md-icon>
-                            {{stationInfo.bikes}}
+                            {{stationInfo[ResourceTypesEnum.bikes]}}
                         </div>
                         <div class="resource-numbers-bikes-mech">
                             <md-icon>settings</md-icon>
-                            {{stationInfo.mechanical_bikes}}
+                            {{stationInfo[BikeTypesEnum.mech]}}
                         </div>
                         <div class="resource-numbers-bikes-elec">
                             <md-icon>power</md-icon>
-                            {{stationInfo.electrical_bikes}}
+                            {{stationInfo[BikeTypesEnum.elec]}}
                         </div>
                     </div>
-                    <div class="resource-numbers-slots">
-                        {{stationInfo.slots}}
+                    <div class="resource-numbers-docks">
+                        {{stationInfo[ResourceTypesEnum.docks]}}
                         <md-icon>local_parking</md-icon>
                     </div>
                 </div>
@@ -39,11 +39,11 @@
                         v-bind:class="{ 'station--disabled': station.status === 0 }"
                         class="nearby-station"
                         @click="selectStation(station.id)">
-                        {{ station.streetName.replace(/[0-9]*\s-\s/, '') }}
+                        {{ station.name.replace(/[0-9]*\s-\s/, '') }}
                         <div class="resource-bar--other">
-                            <div class="mech-bar" v-bind:style="{ width: getBarWidth(station, 'mechanical_bikes') }"></div>
-                            <div class="elec-bar" v-bind:style="{ width: getBarWidth(station, 'electrical_bikes') }"></div>
-                            <div class="slots-bar" v-bind:style="{ width: getBarWidth(station, 'slots') }"></div>
+                            <div class="mech-bar" v-bind:style="{ width: getBarWidth(station, BikeTypesEnum.mech) }"></div>
+                            <div class="elec-bar" v-bind:style="{ width: getBarWidth(station, BikeTypesEnum.elec) }"></div>
+                            <div class="docks-bar" v-bind:style="{ width: getBarWidth(station, ResourceTypesEnum.docks) }"></div>
                         </div>
                     </li>
                 </ul>
@@ -56,11 +56,11 @@
                         v-bind:class="{ 'station--disabled': station.status === 0 }"
                         class="nearby-station"
                         @click="selectStation(station.id)">
-                        {{ station.streetName.replace(/[0-9]*\s-\s/, '') }}
+                        {{ station.name.replace(/[0-9]*\s-\s/, '') }}
                         <div class="resource-bar--other">
-                            <div class="mech-bar" v-bind:style="{ width: getBarWidth(station, 'mechanical_bikes') }"></div>
-                            <div class="elec-bar" v-bind:style="{ width: getBarWidth(station, 'electrical_bikes') }"></div>
-                            <div class="slots-bar" v-bind:style="{ width: getBarWidth(station, 'slots') }"></div>
+                            <div class="mech-bar" v-bind:style="{ width: getBarWidth(station, BikeTypesEnum.mech) }"></div>
+                            <div class="elec-bar" v-bind:style="{ width: getBarWidth(station, BikeTypesEnum.elec) }"></div>
+                            <div class="docks-bar" v-bind:style="{ width: getBarWidth(station, ResourceTypesEnum.docks) }"></div>
                         </div>
                     </li>
                 </ul>
@@ -75,6 +75,8 @@
 
   import { MdDrawer, MdIcon } from 'vue-material/dist/components';
 
+  import { ResourceTypesEnum, BikeTypesEnum } from '../shared/enums';
+
   Vue.use(MdDrawer);
   Vue.use(MdIcon);
 
@@ -86,7 +88,9 @@
     data: function () {
         return {
           stationInfo: null,
-          show: false
+          show: false,
+          ResourceTypesEnum,
+          BikeTypesEnum
         };
     },
     watch: {
@@ -111,11 +115,11 @@
         filterOuter: st => it => it.id !== st && it._radio === 'outer',
         getBarWidth: function (data, resource) {
           let resourceNumber = data[resource]
-          let total = +data.mechanical_bikes + +data.electrical_bikes + +data.slots; // TODO: check data integrity in service
+          let total = data[BikeTypesEnum.mech] + data[BikeTypesEnum.elec] + data[ResourceTypesEnum.docks];
 
           if (total === 0) {
             total = 1; // prevents division by 0
-            if (resource === 'slots') {
+            if (resource === ResourceTypesEnum.docks) {
               resourceNumber = 1; // makes entire bar gray
             }
           }
@@ -167,7 +171,7 @@
                 }
             }
 
-            &-slots {
+            &-docks {
                 .md-icon {
                     margin-left: -4px;
                  }
@@ -250,7 +254,7 @@
          height: 100%;
          background-color: gold;
      }
-     .slots-bar {
+     .docks-bar {
           height: 100%;
           background-color: gray;
       }

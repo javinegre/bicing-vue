@@ -1,3 +1,5 @@
+import { ResourceTypesEnum, BikeTypesEnum } from '../../shared/enums';
+
 import BbbIcon from '../../assets/resource-icons/bikes-big-black.svg';
 import BbgIcon from '../../assets/resource-icons/bikes-big-gray.svg';
 import BbvIcon from '../../assets/resource-icons/bikes-big-green.svg';
@@ -23,7 +25,7 @@ import SsoIcon from '../../assets/resource-icons/slots-small-orange.svg';
 import SsrIcon from '../../assets/resource-icons/slots-small-red.svg';
 
 const icons = {
-  bikes: {
+  [ResourceTypesEnum.bikes]: {
     big: {
       black: BbbIcon,
       gray: BbgIcon,
@@ -39,7 +41,7 @@ const icons = {
       red: BsrIcon
     }
   },
-  slots: {
+  [ResourceTypesEnum.docks]: {
     big: {
       black: SbbIcon,
       gray: SbgIcon,
@@ -62,8 +64,8 @@ const getMapMarker = (activeResource, stationInfo) => {
   const size = stationInfo._radio === 'inner' ? 'big' : 'small';
   const resourceNumber = stationInfo[activeResource];
 
-  if (activeResource === 'mechanical_bikes' || activeResource === 'electrical_bikes') {
-    activeResource = 'bikes';
+  if (activeResource === BikeTypesEnum.mech || activeResource === BikeTypesEnum.elec) {
+    activeResource = ResourceTypesEnum.bikes;
   }
 
   if (stationInfo.status === 1) {

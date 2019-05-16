@@ -11,7 +11,7 @@
                 'menu-resources-bikeType--active': mechBikeFilter,
                 'menu-resources-bikeType--disabled': !resourceVal
             }"
-            @click="switchFilter('mech')">
+            @click="switchFilter(BikeTypesEnum.mech)">
             <md-icon class="menu-resources-filter-icon">settings</md-icon>
             <span class="menu-resources-filter-state">
                 <span v-if="mechBikeFilter"><md-icon>check</md-icon></span>
@@ -23,7 +23,7 @@
                 'menu-resources-bikeType--active': elecBikeFilter,
                 'menu-resources-bikeType--disabled': !resourceVal
             }"
-            @click="switchFilter('elec')">
+            @click="switchFilter(BikeTypesEnum.elec)">
             <md-icon class="menu-resources-filter-icon">power</md-icon>
             <span class="menu-resources-filter-state">
                 <span v-if="elecBikeFilter"><md-icon>check</md-icon></span>
@@ -39,6 +39,8 @@
 
   import { MdButton, MdIcon, MdSwitch } from 'vue-material/dist/components';
 
+  import { ResourceTypesEnum, BikeTypesEnum } from '../../shared/enums';
+
   Vue.use(MdButton);
   Vue.use(MdIcon);
   Vue.use(MdSwitch);
@@ -48,12 +50,13 @@
     props: [],
     data: function () {
       return {
-        resourceVal: true
+        resourceVal: true,
+        BikeTypesEnum
       };
     },
     methods: {
       switchFilter (type) {
-        const [changedValue, oppositeValue] = type === 'mech'
+        const [changedValue, oppositeValue] = type === BikeTypesEnum.mech
             ? ['mechBikeFilter', 'elecBikeFilter']
             : ['elecBikeFilter', 'mechBikeFilter'];
 
@@ -67,7 +70,7 @@
     },
     watch: {
       resourceVal: function (newVal) {
-        this.$store.dispatch('filters/changeResourceMode', newVal ? 'bikes' : 'slots');
+        this.$store.dispatch('filters/changeResourceMode', newVal ? ResourceTypesEnum.bikes : ResourceTypesEnum.docks);
       },
     },
     computed: mapState({

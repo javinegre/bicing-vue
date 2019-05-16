@@ -53,8 +53,8 @@
 
           window.setTimeout(() => {
             this.$store.dispatch('map/changeMapCenter', {
-              lat: station.latitude,
-              lng: station.longitude
+              lat: station.lat,
+              lng: station.lng
             });
           }, transitionDuration)
         }

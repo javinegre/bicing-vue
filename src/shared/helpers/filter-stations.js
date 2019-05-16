@@ -1,3 +1,5 @@
+import { ResourceTypesEnum } from '../../shared/enums';
+
 const isInsideArea = (coord, center, offset) => {
   return coord.lat > center.lat - offset.lat
     && coord.lat < center.lat + offset.lat
@@ -30,8 +32,8 @@ const filterStations = (list, mapCenter, resourceMode) => {
     let shownStation = Object.assign({}, item);
 
     const coord = {
-      lat: +shownStation.latitude,
-      lng: +shownStation.longitude
+      lat: shownStation.lat,
+      lng: shownStation.lng
     };
 
     if ( isInsideOuterArea(coord, mapCenter) ) {
@@ -40,9 +42,6 @@ const filterStations = (list, mapCenter, resourceMode) => {
         : 'outer';
 
       shownStation._distance = getStationDistance(coord, mapCenter);
-
-      shownStation.latitude = +shownStation.latitude;
-      shownStation.longitude = +shownStation.longitude;
 
       // Pushed if inside outer area
       filtered.push(shownStation);
@@ -53,9 +52,9 @@ const filterStations = (list, mapCenter, resourceMode) => {
 
   // Sort stations so stations with more resources are on top
   const shownStations = stationsFiltered.sort((a, b) => {
-    const [resourcesA, resourcesB] = resourceMode === 'bikes'
-      ? [+a.bikes, +b.bikes]
-      : [+a.slots, +b.slots];
+    const [resourcesA, resourcesB] = resourceMode === ResourceTypesEnum.bikes
+      ? [a[ResourceTypesEnum.bikes], b[ResourceTypesEnum.bikes]]
+      : [a[ResourceTypesEnum.docks], b[ResourceTypesEnum.docks]];
 
     return resourcesA - resourcesB;
   });
