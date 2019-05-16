@@ -23,6 +23,13 @@
   import getMapMarker from '../shared/helpers/map-marker';
   import myLocationIcon from '../assets/resource-icons/my-location.svg';
 
+  const getMarkerOpacity = (distance) => {
+    const maxDistance = 0.015;
+    const minOpacity = 0.5;
+
+    return 1 - (distance * (1 - minOpacity) / maxDistance);
+  };
+
   const renderMarkers = (mapHandler, shownStations, activeResource, clickFn) => {
 
     if (mapHandler === null) {
@@ -34,7 +41,8 @@
       const marker = new window.google.maps.Marker({
         position: {lat: it.lat, lng: it.lng},
         icon: getMapMarker(activeResource, it),
-        map: mapHandler
+        map: mapHandler,
+        opacity: getMarkerOpacity(it._distance)
       });
 
       marker.addListener('click', function() {
