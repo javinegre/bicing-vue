@@ -1,5 +1,5 @@
 <template>
-    <md-drawer :md-active.sync="show" @md-closed="close" class="root" ref="stationInfoScrollContainer">
+    <md-drawer :md-active.sync="show" @md-opened="onOpen" @md-closed="onClose" class="root" ref="stationInfoScrollContainer">
         <div>
             <div class="station-selected"
                 v-if="stationInfo"
@@ -103,7 +103,10 @@
         scrollToTop: function () {
           this.$refs.stationInfoScrollContainer.$el.scrollTop = 0;
         },
-        close: function () {
+        onOpen: function () {
+            this.scrollToTop();
+        },
+        onClose: function () {
             this.$store.dispatch('stations/selectStation', null);
         },
         selectStation: function (id) {
