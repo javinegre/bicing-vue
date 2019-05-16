@@ -1,6 +1,6 @@
 <template>
     <div class="menu-resources">
-        <div style="display: flex;">
+        <div class="menu-resources-mode">
             <md-icon>local_parking</md-icon>
             <md-switch class="md-primary switch-resource" v-model="resourceVal" />
             <md-icon>directions_bike</md-icon>
@@ -93,6 +93,10 @@
         border-radius: 22px;
         background-color: rgba(255,255,255,.92);
         box-shadow: 0px 2px 4px 1px rgba(0,0,0,.2);
+
+        &-mode {
+            display: flex;
+        }
 
         &-bikeType {
              margin-right: 8px;

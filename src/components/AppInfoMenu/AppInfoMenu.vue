@@ -6,6 +6,7 @@
         </md-button>
         <md-drawer :md-active.sync="menuShown" @md-closed="closeMenu" class="info-menu-drawer">
             <AppInfoMenuLegend />
+            <AppInfoMenuAvailability />
             <AppInfoMenuLocation />
             <AppInfoMenuAbout />
         </md-drawer>
@@ -14,6 +15,7 @@
 
 <script>
   import AppInfoMenuAbout from './AppInfoMenuAbout.vue';
+  import AppInfoMenuAvailability from './AppInfoMenuAvailability.vue';
   import AppInfoMenuLegend from './AppInfoMenuLegend.vue';
   import AppInfoMenuLocation from './AppInfoMenuLocation.vue';
 
@@ -21,6 +23,7 @@
     name: 'AppInfoMenu',
     components: {
       AppInfoMenuAbout,
+      AppInfoMenuAvailability,
       AppInfoMenuLegend,
       AppInfoMenuLocation
     },
