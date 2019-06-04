@@ -2,57 +2,54 @@
     <div class="infoBox-availability"
         @click="showStationsInfo">
 
-        <div class="infoBox-availability-col infoBox-availability-col--info"
-             v-bind:class="{ 'col-highlight': resourceMode === ResourceTypesEnum.docks }">
-            <div>
-                <md-icon>local_parking</md-icon>
-            </div>
-            <div>
-                {{ getResources('inner')[3] }}
+        <div class="infoBox-availability-block"
+             v-bind:class="{ 'block-highlight': resourceMode === ResourceTypesEnum.docks }">
+            <div class="infoBox-availability-col infoBox-availability-col--info"
+                v-bind:class="{ 'col-highlight': resourceMode === ResourceTypesEnum.docks }">
+                <div>
+                    <md-icon>local_parking</md-icon>
+                </div>
+                <div>
+                    {{ getResources('inner')[3] }}
+                </div>
             </div>
         </div>
 
-        <div class="infoBox-availability-col infoBox-availability-col--divider"></div>
+        <div class="infoBox-availability-block"
+             v-bind:class="{ 'block-highlight': resourceMode === ResourceTypesEnum.bikes }">
+            <div class="infoBox-availability-col infoBox-availability-col--info"
+                 v-bind:class="{ 'col-highlight': resourceMode === ResourceTypesEnum.bikes && mechBikeFilter && elecBikeFilter }">
+                <div>
+                    <md-icon>directions_bike</md-icon>
+                </div>
+                <div>
+                    {{ getResources('inner')[0] }}
+                </div>
+            </div>
+            <div class="infoBox-availability-col infoBox-availability-col--divider"></div>
+            <div class="infoBox-availability-col infoBox-availability-col--info"
+                 v-bind:class="{ 'col-highlight': resourceMode === ResourceTypesEnum.bikes && mechBikeFilter }">
+                <div>
+                    <md-icon>settings</md-icon>
+                </div>
+                <div>
+                    {{ getResources('inner')[1] }}
+                </div>
+            </div>
+            <div class="infoBox-availability-col">
+                <div>+</div>
+            </div>
+            <div class="infoBox-availability-col infoBox-availability-col--info"
+                 v-bind:class="{ 'col-highlight': resourceMode === ResourceTypesEnum.bikes && elecBikeFilter }">
+                <div>
+                    <md-icon>power</md-icon>
+                </div>
+                <div>
+                    {{ getResources('inner')[2] }}
+                </div>
+            </div>
+        </div>
 
-        <div class="infoBox-availability-col infoBox-availability-col--info"
-             v-bind:class="{ 'col-highlight': resourceMode === ResourceTypesEnum.bikes && mechBikeFilter && elecBikeFilter }">
-            <div>
-                <md-icon>directions_bike</md-icon>
-            </div>
-            <div>
-                {{ getResources('inner')[0] }}
-            </div>
-        </div>
-        <div class="infoBox-availability-col">
-            <div>(</div>
-            <div>(</div>
-        </div>
-        <div class="infoBox-availability-col infoBox-availability-col--info"
-             v-bind:class="{ 'col-highlight': resourceMode === ResourceTypesEnum.bikes && mechBikeFilter }">
-            <div>
-                <md-icon>settings</md-icon>
-            </div>
-            <div>
-                {{ getResources('inner')[1] }}
-            </div>
-        </div>
-        <div class="infoBox-availability-col">
-            <div>+</div>
-            <div>+</div>
-        </div>
-        <div class="infoBox-availability-col infoBox-availability-col--info"
-             v-bind:class="{ 'col-highlight': resourceMode === ResourceTypesEnum.bikes && elecBikeFilter }">
-            <div>
-                <md-icon>power</md-icon>
-            </div>
-            <div>
-                {{ getResources('inner')[2] }}
-            </div>
-        </div>
-        <div class="infoBox-availability-col">
-            <div>)</div>
-            <div>)</div>
-        </div>
     </div>
 </template>
 
@@ -107,17 +104,34 @@
         &-availability {
             display: inline-flex;
 
+            &-block {
+                display: flex;
+                padding: 2px 6px;
+                background-color: #f0f0f0;
+
+                &:nth-of-type(1) {
+                    border-top-left-radius: 4px;
+                    border-bottom-left-radius: 4px;
+                }
+                &:nth-of-type(2) {
+                     border-top-right-radius: 4px;
+                     border-bottom-right-radius: 4px;
+                }
+            }
+
             &-col {
-                color: #c0c0c0;
+                color: #d0d0d0;
                 text-align: center;
+                align-self: center;
 
                 &--info {
-                    margin: 0 4px;
+                    margin: 0 2px;
                 }
 
                 &--divider {
-                    margin: 2px 4px 2px 8px;
+                    height: calc(100% - 16px);
                     border-left: 1px solid #e0e0e0;
+                     margin: 0px 6px;
                 }
             }
         }
@@ -135,8 +149,12 @@
             font-size: 14px!important;
 
             &.md-theme-default.md-icon-font {
-                color: #c0c0c0;
+                color: #d0d0d0;
             }
+        }
+
+        .block-highlight {
+            background-color: #ffffff;
         }
 
         .col-highlight {

@@ -80,7 +80,6 @@
              background-color: rgba(255,255,255,.92);
              border-radius: 4px;
              margin-bottom: 8px;
-             padding: 4px 8px;
              box-shadow: 0px 2px 4px 1px rgba(0,0,0,.2);
         }
 
@@ -90,6 +89,8 @@
         }
 
         &-updateTime {
+            padding: 4px 8px;
+
             &-time {
                 font-weight: 500;
                 margin-right: 4px;
