@@ -105,7 +105,7 @@
 <style lang="scss">
     .infoBox {
         &-availability {
-            display: flex;
+            display: inline-flex;
 
             &-col {
                 color: #c0c0c0;
