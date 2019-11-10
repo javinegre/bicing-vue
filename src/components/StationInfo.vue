@@ -30,6 +30,13 @@
                         <md-icon>local_parking</md-icon>
                     </div>
                 </div>
+                <div class="resource-directions">
+                    <a v-bind:href="getDirectionsUrl(stationInfo)"
+                        target="_blank">
+                        <md-icon>directions</md-icon>
+                        Get directions on google maps
+                    </a>
+                </div>
             </div>
             <div class="station-closest">
                 <h4>Closest stations</h4>
@@ -129,10 +136,20 @@
 
           const perc = resourceNumber / (total || 1) * 100;
           return `${perc}%`;
+        },
+        getDirectionsUrl: function (stationInfo) {
+            const apiUrl = 'https://www.google.com/maps/dir/';
+            const params = [
+              { name: 'api', value: 1 },
+              { name: 'destination', value: `${stationInfo.lat},${stationInfo.lng}` },
+              { name: 'travelmode', value: this.resourceMode === ResourceTypesEnum.bikes ? 'walking' : 'bicycling' },
+            ];
+            return `${apiUrl}?${params.map((param) => `${param.name}=${param.value}`).join('&')}`;
         }
     },
     computed: mapState({
-      selectedStation: state => state.stations.selected
+      selectedStation: state => state.stations.selected,
+      resourceMode: state => state.filters.resourceMode,
     })
   }
 </script>
@@ -141,7 +158,7 @@
     .root {}
 
     .station-selected {
-        padding: 32px 8px 32px;
+        padding: 32px 8px 24px;
 
         h3 {
             margin: 0 0 .5em 0;
@@ -152,6 +169,7 @@
             justify-content: space-between;
             font-size: 32px;
             line-height: 32px;
+            margin-bottom: 16px;
 
             &-bikes {
                 display: flex;
@@ -246,6 +264,21 @@
              width: 100%;
              height: 2px;
              margin-bottom: 8px;
+        }
+    }
+
+    .resource-directions {
+        a,
+        a:not(.md-button) {
+            color: #b0b0b0;
+            &:hover {
+                text-decoration: none;
+            }
+        }
+        .md-icon.md-theme-default.md-icon-font {
+            position: relative;
+            top: 0px;
+            color: #b0b0b0 !important;
         }
     }
 
