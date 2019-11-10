@@ -210,7 +210,7 @@
         pointer-events: none;
 
         &.md-icon.md-theme-default.md-icon-font {
-            color: var(--md-theme-default-accent, #ff5252);
+            color: #406090;
         }
     }
 </style>
