@@ -52,7 +52,7 @@ const StationService = () => {
     });
 
     return {
-      updateTime: statusResolved.data.last_updated * 1000,
+      updateTime: statusResolved.data.lastUpdated * 1000,
       stations: stationList
     };
   };
