@@ -4,6 +4,6 @@ export default {
   },
   negreCo: {
     host: 'https://negre.co/',
-    baseUrl: 'bicing/api/v1.2/'
+    baseUrl: 'bicing/api/v1.3/'
   }
 };
